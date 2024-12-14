@@ -1,0 +1,10 @@
+{
+    "Cardio": {
+        "low": ["5-min walk", "Dynamic stretches"],
+        "high": ["10-min jog", "Active stretches"]
+    },
+    "Strength": {
+        "low": ["Bodyweight squats", "Light stretching"],
+        "high": ["Dynamic lunges", "Foam rolling"]
+    }
+}
