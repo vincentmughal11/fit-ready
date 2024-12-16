@@ -7,7 +7,8 @@ st.title("FitReady")
 workout_type = st.sidebar.selectbox("Workout Type", ["Cardio", "Strength", "Flexibility"])
 intensity = st.sidebar.slider("Intensity Level", 1, 10)
 duration = st.sidebar.slider("Duration (minutes)", 10, 120)
-user_satisfaction = st.sidebar.slider("How did the workout feel?", 1, 10)
+st.sidebar.write("How did the workout feel?")
+user_satisfaction = st.sidebar.feedback("stars")
 
 # Display Recommendations
 st.subheader("Recommendations", divider="grey")
@@ -21,6 +22,6 @@ def get_routines(workout_type, intensity):
     return data[workout_type][level]
 
 warm_up, wind_down = get_routines(workout_type, intensity)
-st.write(f"Warm-Up Routine: {warm_up}")
-st.write(f"Wind-Down Routine: {wind_down}")
+selection = st.pills("Warm up suggestions", warm_up, selection_mode="multi")
+selection = st.pills("Wind down suggestions", wind_down, selection_mode="multi")
 
