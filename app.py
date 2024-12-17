@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import mlp
 
 # App Title
 st.title("FitReady")
@@ -15,13 +16,18 @@ user_satisfaction = st.sidebar.feedback("stars")
 # Display Recommendations
 st.subheader("Recommendations", divider="grey")
 
-import json
+import csv
+
+def train_model()
 
 def get_routines(workout_type, intensity):
-    with open("data/routines.json", "r") as file:
-        data = json.load(file)
-    level = "high" if intensity > 5 else "low"
-    return data[workout_type][level]
+    with open("data/data.csv", "r") as file:
+        reader = csv.reader(file)
+        next(reader, None)
+
+        for row in reader:
+
+    
 
 warm_up, wind_down = get_routines(workout_type, intensity)
 selection = st.pills("Warm up suggestions", warm_up, selection_mode="multi")
