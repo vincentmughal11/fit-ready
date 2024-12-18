@@ -1,2 +1,6 @@
-Workout,Duration,Intensity,Targeted Muscles,Warm-Up,Cooldown
-Squats,30 min,High,Quads,Glutes,"Dynamic Lunges; Bodyweight Squats","Hamstring Stretch; Foam Rolling"
+workout_type,muscle_groups,intensity,duration,satisfaction,warm_ups,wind_downs
+cardio,"['legs', 'arms']",5,30,3,"['jogging']", "['dynamic muscle swings', 'high knee march', 'side lunges']"
+strength,"['arms', 'chest']",high,45,9,"['push-ups']", "['cool down']"
+yoga,"['core', 'back']",low,60,7,"['breathing']", "['meditation']"
+pilates,"['core', 'legs']",medium,40,8,"['stretching']", "['relaxation']"
+cycling,"['legs', 'cardio']",high,50,9,"['warm-up ride']", "['cool down']"

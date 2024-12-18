@@ -1,13 +1,13 @@
 import streamlit as st
 import numpy as np
-import mlp
+from mlp import MultiLayerPerceptron
 
 # App Title
 st.title("FitReady")
 
 # User Input
 workout_type = st.sidebar.selectbox("Workout Type", ["Cardio", "Strength", "Flexibility"])
-muscle_groups = st.sidebar.multiselect("Muscle Groups", ["Chest", "Back", "Legs", "Shoulders", "Arms", "Abs", "Calves", "Glutes", "Full Body"])
+muscle_groups = st.sidebar.multiselect("Muscle Groups", ["Chest", "Back", "Legs", "Core", "Arms",])
 intensity = st.sidebar.slider("Intensity Level", 1, 10)
 duration = st.sidebar.slider("Duration (minutes)", 10, 120)
 st.sidebar.write("How did the workout feel?")
@@ -18,7 +18,25 @@ st.subheader("Recommendations", divider="grey")
 
 import csv
 
-def train_model()
+def train_model(epochs, layers):
+    mlp = MultiLayerPerceptron(layers)
+
+    with open("data/data.csv", "r") as data, open("data/labels.csv", "r") as labels:
+        dataReader = csv.reader(data)
+        next(dataReader, None)
+
+        labelsReader = csv.reader(labels)
+        next(labelsReader, None)
+
+        reader = zip(dataReader, labelsReader)
+        for i in range(epochs):
+            mse = 0
+            for row in reader:
+                mse += mlp.bp(row[1], row[2])
+
+
+train_model(15, [5, 5, 2])
+
 
 def get_routines(workout_type, intensity):
     with open("data/data.csv", "r") as file:
@@ -26,6 +44,7 @@ def get_routines(workout_type, intensity):
         next(reader, None)
 
         for row in reader:
+
 
     
 
