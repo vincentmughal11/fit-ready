@@ -6,7 +6,7 @@ from sklearn.metrics import mean_squared_error, accuracy_score
 import pandas as pd
 
 #set the model up
-data = pd.read_csv("data.csv")
+data = pd.read_csv("data/user_workout.csv")
 
 X = data.drop(columns=["Age", "Gender", "Weight (kg)", "Height (m)", "Session_Duration (hours)", "Workout_Type"])
 y = data[["Max_BPM", "Avg_BPM", "Resting_BPM"]]
@@ -23,9 +23,6 @@ model.fit(X_train, y_train)
 #test/predict
 y_pred = model.predict(X_test)
 print("Predictions for regression:", y_pred)
-
-y_pred = model.predict(X_test)
-print("Predictions for classification:", y_pred)
 
 mse = mean_squared_error(y_test, y_pred, multioutput="raw_values")
 print("Mean Squared Errors for each target:", mse)
