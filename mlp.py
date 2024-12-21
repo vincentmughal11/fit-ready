@@ -15,6 +15,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 from xgboost import XGBRegressor
 
+# Set enable_categorical to True
 model = MultiOutputRegressor(XGBRegressor(objective="reg:squarederror", max_depth=6, learning_rate=0.1, n_estimators=100))
 
 #train
@@ -31,7 +32,6 @@ import matplotlib.pyplot as plt
 
 xgb.plot_importance(model.estimators_[0])
 plt.show()
-
 # to tune hyperparameters
 
 # from sklearn.model_selection import GridSearchCV
