@@ -2,44 +2,55 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.multioutput import MultiOutputRegressor, MultiOutputClassifier
 from sklearn.metrics import mean_squared_error, accuracy_score
+from xgboost import XGBRegressor
 
 import pandas as pd
 
-#set the model up
-data = pd.read_csv("data/user_workout.csv")
+class userWorkoutModel:
+    def __init__(self, x, y, max_depth=5, learning_rate=0.1, n_estimators=150, subsample=1, colsample_bytree=1, reg_alpha=0):
+        self.x = x
+        self.y = y
+        self.max_depth = max_depth
+        self.learning_rate = learning_rate
+        self.n_estimators = n_estimators
+        self.subsample = subsample
+        self.colsample_bytree = colsample_bytree
+        self.reg_alpha = reg_alpha
+        
 
-X = data.drop(columns=["Age", "Gender", "Weight (kg)", "Height (m)", "Session_Duration (hours)", "Workout_Type"])
-y = data[["Max_BPM", "Avg_BPM", "Resting_BPM"]]
+    def train(self):
+        X_train, X_test, y_train, y_test = train_test_split(self.x, self.y, test_size=0.2, random_state=42)
+        model = MultiOutputRegressor(XGBRegressor(objective="reg:squarederror", 
+                                                  max_depth=self.max_depth, 
+                                                  learning_rate=self.learning_rate, 
+                                                  n_estimators=self.n_estimators, 
+                                                  subsample=self.subsample, 
+                                                  colsample_bytree=self.colsample_bytree, 
+                                                  reg_alpha=self.reg_alpha,  
+                                                  enable_categorical=True))
+        model.fit(X_train, y_train)
+        return model, X_test, y_test
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# #test/predict
+# y_pred = model.predict(X_test)
+# print("Predictions for regression:", y_pred)
 
-from xgboost import XGBRegressor
+# mse = mean_squared_error(y_test, y_pred, multioutput="raw_values")
+# print("Mean Squared Errors for each target:", mse)
 
-# Set enable_categorical to True
-model = MultiOutputRegressor(XGBRegressor(objective="reg:squarederror", max_depth=6, learning_rate=0.1, n_estimators=100))
+# import matplotlib.pyplot as plt
 
-#train
-model.fit(X_train, y_train)
+# xgb.plot_importance(model.estimators_[0])
+# plt.show()
 
-#test/predict
-y_pred = model.predict(X_test)
-print("Predictions for regression:", y_pred)
-
-mse = mean_squared_error(y_test, y_pred, multioutput="raw_values")
-print("Mean Squared Errors for each target:", mse)
-
-import matplotlib.pyplot as plt
-
-xgb.plot_importance(model.estimators_[0])
-plt.show()
-# to tune hyperparameters
+# # to tune hyperparameters
 
 # from sklearn.model_selection import GridSearchCV
 
 # param_grid = {
-#     "estimator__max_depth": [3, 5, 7],
-#     "estimator__learning_rate": [0.01, 0.1, 0.2],
-#     "estimator__n_estimators": [50, 100, 150],
+#     'estimator__subsample': [0.5, 0.8, 1],
+#     'estimator__colsample_bytree': [0.5, 0.8, 1],
+#     'estimator__reg_alpha': [0, 0.1, 0.5, 1, 5],
 # }
 
 # # Use GridSearchCV with MultiOutputRegressor
@@ -53,7 +64,3 @@ plt.show()
 
 # grid_search.fit(X_train, y_train)
 # print("Best Parameters:", grid_search.best_params_)
-
-
-
-

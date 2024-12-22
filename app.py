@@ -1,6 +1,16 @@
 import streamlit as st
 import numpy as np
-from mlp import MultiLayerPerceptron
+from mlp import userWorkoutModel
+import pandas as pd
+import math
+
+data = pd.read_csv("data/user_workout.csv")
+
+x = data[["Age", "Gender", "Weight (kg)", "Height (m)", "Session_Duration (hours)", "Workout_Type"]]
+y = data[["Max_BPM", "Avg_BPM", "Resting_BPM"]]
+
+modelCreator = userWorkoutModel(x, y)
+model, X_test, y_test = modelCreator.train()
 
 # App Title
 st.title("FitReady")
@@ -11,7 +21,7 @@ user_gender = st.sidebar.selectbox("Gender", ["Male", "Female"])
 user_age = st.sidebar.slider("Age", 18, 65)
 user_height = st.sidebar.slider("Height (cm)", 150, 220)
 user_weight = st.sidebar.slider("Weight (kg)", 50, 150)
-duration = st.sidebar.slider("Duration (hours)", 0.00, 3.00, step=0.01)
+duration = st.sidebar.slider("Duration (hours)", 1.00, 3.00, step=0.01)
 workout_type = st.sidebar.selectbox("Workout Type", ["Cardio", "Strength", "Flexibility"])
 
 st.sidebar.write('## Exercises')
@@ -22,46 +32,17 @@ intensity = st.sidebar.slider("Intensity Level", 1, 10)
 # Display Recommendations
 st.subheader("Recommendations", divider="grey")
 
-# import csv
+def get_BPM(user_gender, user_age, user_height, user_weight, duration, workout_type):
+    x = np.array([user_age, user_gender, user_weight, user_height, duration, workout_type])
+    x = x.reshape(1, -1)
+    print(x)
+    return model.predict(x)
+    
 
-# def train_model(epochs, layers):
-#     mlp = MultiLayerPerceptron(layers)
-
-#     with open("data/data.csv", "r") as data, open("data/labels.csv", "r") as labels:
-#         dataReader = csv.reader(data)
-#         next(dataReader, None)
-
-#         labelsReader = csv.reader(labels)
-#         next(labelsReader, None)
-
-#         reader = zip(dataReader, labelsReader)
-#         for i in range(epochs):
-#             mse = 0
-#             for row in reader:
-#                 mse += mlp.bp(row[1], row[2])
-
-
-# train_model(15, [5, 5, 2])
-
-
-# def get_routines(workout_type, intensity):
-#     with open("data/data.csv", "r") as file:
-#         reader = csv.reader(file)
-#         next(reader, None)
-
-#         for row in reader:
-
-import json
-
-def get_routines(workout_type, intensity):
-    with open("data/temp.json", "r") as file:
-        data = json.load(file)
-    level = "high" if intensity > 5 else "low"
-    return data[workout_type][level]
-
-warm_up, wind_down = get_routines(workout_type, intensity)
-selection = st.pills("Warm up suggestions", warm_up, selection_mode="multi")
-selection = st.pills("Wind down suggestions", wind_down, selection_mode="multi")
-
-
+bpm = get_BPM(user_gender, user_age, user_height, user_weight, duration, workout_type)
+st.metric(label="Max BPM", value=math.round(max_bpm))
+st.metric(label="Avg BPM", value=math.round(avg_bpm))
+st.metric(label="Resting BPM", value=math.round(rest_bpm))
+# selection = st.pills("Warm up suggestions", warm_up, selection_mode="multi")
+# selection = st.pills("Wind down suggestions", wind_down, selection_mode="multi")
 
