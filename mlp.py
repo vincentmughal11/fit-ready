@@ -4,7 +4,7 @@ from sklearn.multioutput import MultiOutputRegressor, MultiOutputClassifier
 from sklearn.metrics import mean_squared_error, accuracy_score
 from xgboost import XGBRegressor
 
-import pandas as pd
+import pandas as p
 
 class userWorkoutModel:
     def __init__(self, x, y, max_depth=5, learning_rate=0.1, n_estimators=150, subsample=1, colsample_bytree=1, reg_alpha=0):
@@ -26,8 +26,7 @@ class userWorkoutModel:
                                                   n_estimators=self.n_estimators, 
                                                   subsample=self.subsample, 
                                                   colsample_bytree=self.colsample_bytree, 
-                                                  reg_alpha=self.reg_alpha,  
-                                                  enable_categorical=True))
+                                                  reg_alpha=self.reg_alpha))
         model.fit(X_train, y_train)
         return model, X_test, y_test
 
