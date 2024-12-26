@@ -76,13 +76,17 @@ class ExerciseRecommender:
 
     def preprocess_data(self):
         # Convert categorical data to numerical
-        self.data['BodyPart'] = self.data['BodyPart'].astype('category').cat.codes
-        self.data['Equipment'] = self.data['Equipment'].astype('category').cat.codes
+        self.data['Type'] = self.data['Type'].astype('category').cat.codes
+        self.data['BodyPart'] = self.data['BodyPart'].astype('category')
+        self.data['BodyPart_codes'] = self.data['BodyPart'].cat.codes
+        self.data['Equipment'] = self.data['Equipment'].astype('category')
+        self.data['Equipment_codes'] = self.data['Equipment'].cat.codes
+        self.data['Level'] = self.data['Level'].astype('category').cat.codes
         self.data['Rating'] = self.data['Rating'].fillna(0)  # Fill missing ratings with 0
 
     def train_model(self):
         self.preprocess_data()
-        X = self.data[['BodyPart', 'Equipment']]
+        X = self.data[['Type', 'BodyPart_codes', 'Equipment_codes', 'Level']]
         y = self.data['Title']
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         self.model = RandomForestClassifier(n_estimators=100, random_state=42)
@@ -92,20 +96,23 @@ class ExerciseRecommender:
         if self.model is None:
             raise Exception("Model not trained. Call train_model() first.")
         
+        target_muscles_codes = [self.data['BodyPart'].cat.categories.get_loc(muscle) for muscle in target_muscles]
+        target_equipment_codes = [self.data['Equipment'].cat.categories.get_loc(equipment) for equipment in target_equipment]
+           
         # Filter exercises by target muscles and equipment
-        filtered_data = self.data[self.data['BodyPart'].isin(target_muscles) & self.data['Equipment'].isin(target_equipment)]
+        filtered_data = self.data[self.data['BodyPart_codes'].isin(target_muscles_codes) & self.data['Equipment_codes'].isin(target_equipment_codes)]
         if filtered_data.empty:
             return []
 
         # Predict and recommend exercises
-        X = filtered_data[['Type', 'BodyPart', 'Equipment', 'Level']]
+        X = filtered_data[['Type', 'BodyPart_codes', 'Equipment_codes', 'Level']]
         predictions = self.model.predict(X)
         recommended_exercises = filtered_data[filtered_data['Title'].isin(predictions)].head(num_exercises)
         
         return recommended_exercises[['Title', 'Desc', 'BodyPart', 'Equipment', 'Rating']]
+    
 
-# Example usage:
-# recommender = ExerciseRecommender('/Users/vincentmughal/Downloads/fitready/data/exercises.csv')
-# recommender.train_model()
-# recommendations = recommender.recommend_exercises(['Abdominals'], num_exercises=5)
-# print(recommendations)
+# # Test the ExerciseRecommender
+data = pd.read_csv("data/exercises.csv")
+print(data[data['BodyPart'].isin(['Abductors'])])
+

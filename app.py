@@ -3,16 +3,25 @@ import numpy as np
 from mlp import UserWorkoutModel, ExerciseRecommender
 import pandas as pd
 
-user_workout_data = pd.read_csv("data/user_workout.csv")
-user_workout_data = pd.get_dummies(user_workout_data, columns=["Gender", "Workout_Type"])
-x1 = user_workout_data[["Age", "Gender_Female", "Gender_Male", "Weight (kg)", "Height (m)", "Session_Duration (hours)", "Workout_Type_Yoga", "Workout_Type_HIIT", "Workout_Type_Cardio", "Workout_Type_Strength"]]
-y1 = user_workout_data[["Max_BPM", "Avg_BPM", "Resting_BPM"]]
-userWorkoutModelCreator = UserWorkoutModel(x1, y1)
-userWorkoutModel, X_test, y_test = userWorkoutModelCreator.train()
+@st.cache_resource
+def load_user_workout_model():
+    user_workout_data = pd.read_csv("data/user_workout.csv")
+    user_workout_data = pd.get_dummies(user_workout_data, columns=["Gender", "Workout_Type"])
+    x1 = user_workout_data[["Age", "Gender_Female", "Gender_Male", "Weight (kg)", "Height (m)", "Session_Duration (hours)", "Workout_Type_Yoga", "Workout_Type_HIIT", "Workout_Type_Cardio", "Workout_Type_Strength"]]
+    y1 = user_workout_data[["Max_BPM", "Avg_BPM", "Resting_BPM"]]
+    userWorkoutModelCreator = UserWorkoutModel(x1, y1)
+    return userWorkoutModelCreator.train()
 
-exerciseRecommender = ExerciseRecommender("data/exercises.csv")
-exerciseRecommender.preprocess_data()
-exerciseRecommender.train_model()
+userWorkoutModel, X_test, y_test = load_user_workout_model()
+
+@st.cache_resource
+def load_exercise_recommender():
+    exerciseRecommender = ExerciseRecommender("data/exercises.csv")
+    exerciseRecommender.preprocess_data()
+    exerciseRecommender.train_model()
+    return exerciseRecommender
+
+exerciseRecommender = load_exercise_recommender()
 
 
 
@@ -52,8 +61,12 @@ workout_type = st.sidebar.selectbox("Workout Type", ["Cardio", "Strength", "HIIT
 #Workout input
 st.sidebar.write('## Exercises')
 st.sidebar.write('only for Strength workouts')
-muscle_groups = st.sidebar.multiselect("Target Muscles", ["Chest", "Back", "Legs", "Core", "Arms",])
-equipment = st.sidebar.multiselect("Equipment", ["Dumbbells", "Barbell", "Resistance Bands", "Bodyweight", "Kettlebell"])
+muscle_groups = st.sidebar.multiselect("Target Muscles", ['Abdominals', 'Adductors', 'Abductors', 'Biceps', 'Calves', 'Chest', 'Forearms',
+ 'Glutes', 'Hamstrings', 'Lats', 'Lower Back', 'Middle Back', 'Traps', 'Neck',
+ 'Quadriceps', 'Shoulders', 'Triceps'])
+equipment = st.sidebar.multiselect("Equipment", ['Bands', 'Barbell', 'Kettlebells', 'Dumbbell', 'Other', 'Cable', 'Machine',
+ 'Body Only', 'Medicine Ball', 'Exercise Ball', 'Foam Roll',
+ 'E-Z Curl Bar'])
 
 
 # Display Recommendations
@@ -69,6 +82,7 @@ st.metric(label="Resting BPM", value=round(rest_bpm))
 
 if workout_type == "Strength":
     exercises = exerciseRecommender.recommend_exercises(muscle_groups, equipment)
-    st.write("### Recommended Exercises")
-    for exercise in exercises:
-        st.write(exercise)
+    if not exercises:
+        st.write("No exercises found for the selected muscle groups and equipment.")
+    else:
+        st.dataframe(exercises)
