@@ -173,8 +173,9 @@ st.metric(label="Avg BPM", value=round(avg_bpm))
 st.metric(label="Resting BPM", value=round(rest_bpm))
 
 if workout_type == "Strength":
+    st.write("### Recommended Exercises")
     exercises = exercise_recommender.recommend_exercises(muscle_groups, equipment)
-    if not exercises:
+    if len(exercises) == 0:
         st.write("No exercises found for the selected muscle groups and equipment.")
     else:
-        st.dataframe(exercises)
+        st.dataframe(exercises, column_config={"Description": {"width": "large"}})

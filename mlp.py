@@ -117,9 +117,9 @@ class ExerciseRecommender:
         self.data["Equipment"] = self.data["Equipment"].astype("category")
         self.data["Equipment_codes"] = self.data["Equipment"].cat.codes
         self.data["Level"] = self.data["Level"].astype("category").cat.codes
-        self.data["Rating"] = self.data["Rating"].fillna(
-            0
-        )  # Fill missing ratings with 0
+        self.data["Rating"] = self.data.groupby(["BodyPart", "Equipment"])["Rating"].transform(
+            lambda x: x.fillna(x.mean())
+        )
 
     def train_model(self):
         '''
@@ -168,8 +168,3 @@ class ExerciseRecommender:
         return recommended_exercises[
             ["Title", "Desc", "BodyPart", "Equipment", "Rating"]
         ]
-
-
-# # Test the ExerciseRecommender
-data = pd.read_csv("data/exercises.csv")
-print(data[data["BodyPart"].isin(["Abductors"])])
