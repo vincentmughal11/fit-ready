@@ -1,6 +1,7 @@
 [theme]
-primaryColor="#FF4B4B"
-backgroundColor="#FFFFFF"
-secondaryBackgroundColor="#F0F2F6"
-textColor="#31333F"
+base="dark"
+primaryColor="#FFD700"  # Gold accent
+backgroundColor="#1E1E1E"  # Dark dominant color
+secondaryBackgroundColor="#2E2E2E"  # Lighter gray contrast
+textColor="#D3D3D3"  # Subtle white
 font="sans serif"

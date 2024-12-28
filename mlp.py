@@ -118,7 +118,7 @@ class ExerciseRecommender:
         self.data["Equipment_codes"] = self.data["Equipment"].cat.codes
         self.data["Level"] = self.data["Level"].astype("category").cat.codes
         self.data["Rating"] = self.data.groupby(["BodyPart", "Equipment"])["Rating"].transform(
-            lambda x: x.fillna(x.mean())
+            lambda x: x.fillna(round(x.mean(), 1))
         )
 
     def train_model(self):
