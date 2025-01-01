@@ -13,8 +13,8 @@ from mlp import UserWorkoutModel, ExerciseRecommender
 @st.cache_resource
 def load_user_workout_model():
     """
-    This function loads the user workout model, 
-    preprocess the data from data/user_workout.csv, 
+    This function loads the user workout model,
+    preprocess the data from data/user_workout.csv,
     and then trains the model and returns it.
     """
     user_workout_data = pd.read_csv("data/user_workout.csv")
@@ -46,8 +46,8 @@ userWorkoutModel, X_test, y_test = load_user_workout_model()
 @st.cache_resource
 def load_exercise_recommender():
     """
-    This funciton loads the exercise recommender model 
-    and processes the data from data/exercises.csv, 
+    This funciton loads the exercise recommender model
+    and processes the data from data/exercises.csv,
     trains the model, and then returns it.
     """
     recommender = ExerciseRecommender("data/exercises.csv")
@@ -65,7 +65,7 @@ st.title("FitReady")
 
 class UserInfoWorkout:
     """
-    This class stores the user information and workout information 
+    This class stores the user information and workout information
     and encodes it to be used in the model.
     """
 
@@ -81,7 +81,7 @@ class UserInfoWorkout:
         """
         This function encodes the user information
          and workout information to be used in the model.
-         """
+        """
         if self.workout == "Cardio":
             workout_encode = [False, False, True, False]
         elif self.workout == "Strength":
