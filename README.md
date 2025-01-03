@@ -49,8 +49,3 @@ This class is used to recommend exercises based on user input. It preprocesses t
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
